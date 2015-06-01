@@ -2,15 +2,13 @@ package com.struts2Login.action;
 
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
-import com.opensymphony.xwork2.ModelDriven;
 import com.struts2Login.bean.User;
-import com.struts2Login.dao.UserDao;
-import com.struts2Login.dao.impl.UserDaoImpl;
-import com.struts2Login.service.LoginServeice;
-import com.struts2Login.service.impl.LoginServiceImpl;
+import com.struts2Login.service.UserService;
 import org.apache.struts2.convention.annotation.*;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
+
+import javax.annotation.Resource;
 
 
 /**
@@ -22,12 +20,10 @@ import org.springframework.stereotype.Controller;
 @Namespace("/user")
 @ParentPackage("struts2")
 public class UserAction extends ActionSupport {
-
     private User user;
 
-    private UserDao userDao=new UserDaoImpl();
-
-    private LoginServeice loginServeice=new LoginServiceImpl();
+    @Resource
+    private UserService userService;
 
 
     @Action(value = "login", results = {
@@ -36,7 +32,21 @@ public class UserAction extends ActionSupport {
            }
     )
     public String login (){
-        if(this.loginServeice.checkUserLogin(user.getUsername(), user.getPassword())){
+        switch (userService.checkUserLogin(user.getUsername(), user.getPassword())){
+            case UserService.SUCCESS:
+                User user=new User();
+                user.setUsername(user.getUsername());
+                user.setPassword(user.getPassword());
+
+                ActionContext.getContext().getSession().put("userInfo",user);
+                return SUCCESS;
+            case UserService.PASSWORD_WRONG:
+                return INPUT;
+            case UserService.No_THIS_USER:
+                return INPUT;
+        }
+        return INPUT;
+        /*if(userService.checkUserLogin(user.getUsername(), user.getPassword())){
             User user=new User();
             user.setUsername(user.getUsername());
             user.setPassword(user.getPassword());
@@ -44,25 +54,25 @@ public class UserAction extends ActionSupport {
             ActionContext.getContext().getSession().put("userInfo",user);
             return SUCCESS;
         }
-        return INPUT;
+        return INPUT;*/
     }
 
     @Action(value = "register",results = {
-            @Result(name="success",location = "/registerResult.jsp")
+            @Result(name=SUCCESS,location = "/registerResult.jsp"),
+            @Result(name=ERROR,location = "/failRegister.jsp")
     })
     public String register(){
         //todo:注册失败没有判断
         //todo:用户名不能重复
-        String filename="D:\\sql.txt";
-        /*if(loginServeice.checkUsernameExist(user.getUsername())){
+        if(userService.checkUsernameExist(user.getUsername())){
             return ERROR;
-        }*/
-        userDao.write(filename,user);
+        }
+        userService.addUser(user);
         return SUCCESS;
     }
 
     @Action(value = "mainPage",results = {
-            @Result(name = "success",location = "/mainResult.jsp")
+            @Result(name = SUCCESS,location = "/mainResult.jsp")
     })
     public String mainPage(){
         return SUCCESS;
@@ -76,4 +86,5 @@ public class UserAction extends ActionSupport {
     public User getUser() {
         return user;
     }
+
 }

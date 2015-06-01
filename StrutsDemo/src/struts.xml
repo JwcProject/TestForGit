@@ -14,6 +14,7 @@
     </package>-->
 
 
+    <constant name="struts.objectFactory" value="spring"/>
     <package name="struts2" extends="struts-default">
         <!--<interceptors>
             <interceptor name="loginInterceptor" class="com.struts2Login.interceptor.LoginInterceptor">
@@ -25,6 +26,8 @@
         </interceptors>
 
         <default-interceptor-ref name="myDefaultInterceptorStack"/>-->
+
+
 
         <global-results>
             <result name="login">/error.jsp</result>

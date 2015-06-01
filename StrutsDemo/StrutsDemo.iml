@@ -20,6 +20,13 @@
         </configuration>
       </facet>
     </facet>
+    <facet type="Spring" name="Spring">
+      <configuration>
+        <fileset id="fileset" name="Spring Application Context" removed="false">
+          <file>file://$MODULE_DIR$/src/applicationContext.xml</file>
+        </fileset>
+      </configuration>
+    </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
@@ -28,7 +35,7 @@
     </content>
     <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="rrr123" level="project" />
-    <orderEntry type="library" name="Spring-4.1.6.RELEASE" level="project" />
+    <orderEntry type="library" name="spring" level="project" />
+    <orderEntry type="library" name="struts2" level="project" />
   </component>
 </module>
